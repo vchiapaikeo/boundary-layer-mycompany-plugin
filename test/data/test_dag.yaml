@@ -1,0 +1,38 @@
+name: my_test_dag
+
+dag_args:
+  concurrency: 2
+  max_active_runs: 1
+  schedule_interval: '@daily'
+  catchup: true
+
+default_task_args:
+  owner: vchiapaikeo
+  retries: 1
+  retry_delay: 1
+  start_date: '2021-05-01'
+  depends_on_past: false
+
+operators:
+- name: parent_task
+  type: bash
+  properties:
+    bash_command: "sleep 10"
+
+- name: another_parent_task
+  type: bash
+  upstream_dependencies:
+    - parent_task
+  properties:
+    bash_command: "sleep 10"
+
+- name: new_task
+  type: gcp_cloud_function_invoke
+  upstream_dependencies:
+    - another_parent_task
+  properties:
+    function_id: my-function-name
+    input_data:
+      bucket: mybucket
+      path: path/to/data/parquet/
+    location: us-west1

@@ -1,0 +1,12 @@
+venv
+*.pyc
+*.egg-info
+dist/*
+coverage.xml
+.coverage
+.tox
+.*.sw[op]
+.idea/
+*.iml
+.cache/
+.vscode/
